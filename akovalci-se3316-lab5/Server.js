@@ -14,9 +14,8 @@ var bodyParser = require('body-parser');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(__dirname + '/app/client'));
-app.use(cors({origin: '*'}));
+
+app.use(cors());
 app.use(bodyParser.json());
 
 var port = 8081;        // set our port
@@ -37,17 +36,29 @@ router.route('/users')
         user.password = req.body.pass;
         user.save(function(err) {
             if (err) throw err;
+            
+             res.json({ message: 'description added!' });
         });
     }).get(function(req, res) {
         User.find(function(err, users) {
             if (err)
                 res.send(err);
-
             res.json(users);
         });
     });
+router.route('/login')
+    .post(function(req, res) {
+        User.findOne({ username: req.body.name }, function(err, user) {
+            if (err) throw err;
+        
+            // test a matching password
+            user.comparePassword(req.body.pass, function(err, isMatch) {
+                if (err) throw err;
+                res.json({ message: 'Success!' }); 
+            });
 
-
+        });
+    });
 // router.route('/messages')
 
 //     // create a bear (accessed at POST http://localhost:8080/api/messages)
@@ -76,6 +87,7 @@ router.route('/users')
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {
+    console.log("get received");
     res.json({ message: 'hooray! welcome to our api!' });   
 });
 

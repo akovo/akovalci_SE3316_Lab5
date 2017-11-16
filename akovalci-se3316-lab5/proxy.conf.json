@@ -1,0 +1,7 @@
+{
+  "/api/*": {
+    "target": "hhttp://akovalci-se3316-lab5-akovo.c9users.io:8081",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
