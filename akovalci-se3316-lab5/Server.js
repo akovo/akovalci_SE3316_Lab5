@@ -11,6 +11,7 @@ var cors = require('cors');
 var express    = require('express');        // call express
 var app        = express();   // define our app using express
 var bodyParser = require('body-parser');
+var nodemailer = require('nodemailer');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -31,13 +32,46 @@ router.use(function(req, res, next) {
 
 router.route('/users')
     .post(function(req, res) {
-        var user = new User();
-        user.username = req.body.name;
-        user.password = req.body.pass;
-        user.save(function(err) {
+        User.findOne({ username: req.body.name }, function(err, user) {
             if (err) throw err;
-            
-             res.json({ message: 'description added!' });
+            if(user == null){
+                 var user = new User({
+                     username: req.body.name,
+                     password: req.body.pass,
+                     verified: false
+                 });
+                user.save(function(err) {
+                    if (err)
+                        res.send(err);
+                    var transporter = nodemailer.createTransport({
+                       service: 'Gmail',
+                       auth: {
+                           user: 'dylanandadampython@gmail.com',
+                           pass: 'DualDegree'
+                       }
+                    });
+                    var text = 'Please click the link to verify your account:';
+                    var mailOptions = {
+                        from: 'dylanandadampython@gmail.com', // sender address
+                        to: req.body.name, // list of receivers
+                        subject: 'Please Confirm your Account', // Subject line
+                        text: text + ' https://akovalci-se3316-lab5-akovo.c9users.io:8081/api/verify/'+ req.body.name   //, // plaintext body
+                    };
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if(error){
+                            console.log(error);
+                            res.json({yo: 'error'});
+                        }else{
+                            console.log('Message sent: ' + info.response);
+                            res.json({yo: info.response});
+                        };
+                    });
+                    res.json({ message: 'user added, must verify' });
+                });
+            }
+            else{
+                res.json({ message: 'user already exists!' });
+            }
         });
     }).get(function(req, res) {
         User.find(function(err, users) {
@@ -46,46 +80,37 @@ router.route('/users')
             res.json(users);
         });
     });
+router.route('/verify/:email').get(function(req,res){
+    console.log(" I made it");
+    User.update({ username: req.params.email }, { $set: { verified: true }}, function (err, newUser) {
+                if (err) return handleError(err);
+                res.send("Verified!");
+             });
+});
+
 router.route('/login')
     .post(function(req, res) {
         User.findOne({ username: req.body.name }, function(err, user) {
             if (err) throw err;
-        
-            // test a matching password
-            user.comparePassword(req.body.pass, function(err, isMatch) {
-                if (err) throw err;
-                res.json({ message: 'Success!' }); 
-            });
 
+            if(user == null){
+                res.json({message:"User not found"})
+            }
+            // test a matching password
+            else{
+                user.comparePassword(req.body.pass, function(err, isMatch) {
+                    if (err) throw err;
+                    if(isMatch){
+                        res.json({ message: 'Success!' });
+                    }
+                    else{
+                        res.json({ message: 'Invalid Pass!' });    
+                    }
+                });
+            }
         });
     });
-// router.route('/messages')
 
-//     // create a bear (accessed at POST http://localhost:8080/api/messages)
-//     .post(function(req, res) {
-//         var sanitized = req.body.description.replace(/[^\w\s!?.,'%$]/g, '');
-//         var desc = new Description();      // create a new instance of the Description model
-//         desc.course = req.body.course;  // set the Descriptions course (comes from the request)
-//         desc.description = sanitized;
-//         desc.time = new Date();
-//         // save the description and check for errors
-//         desc.save(function(err) {
-//             if (err)
-//                 res.send(err);
-
-//             res.json({ message: 'description added!' });
-//         });
-//     })
-//     .get(function(req, res) {
-//         Description.find(function(err, descriptions) {
-//             if (err)
-//                 res.send(err);
-
-//             res.json(descriptions);
-//         });
-//     });
-
-// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {
     console.log("get received");
     res.json({ message: 'hooray! welcome to our api!' });   

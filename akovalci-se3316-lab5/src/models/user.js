@@ -8,6 +8,7 @@ var mongoose = require('mongoose'),
 var userSchema   = new Schema({
     username: { type: String, required: true},
     password: { type: String, required: true},
+    verified: { type: Boolean, required: true}
    
 });
 
