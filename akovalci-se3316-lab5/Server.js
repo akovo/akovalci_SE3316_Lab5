@@ -2,10 +2,10 @@
 
 // BASE SETUP
 // =============================================================================
-var mongoose   = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/users'); // connect to our database
-//var Description     = require('./app/models/courseDescription.js');
-var User     = require('./src/models/user.js');
+var mongoose   = require('mongoose'); 
+
+var User = require('./src/models/user.js');
+var Collection = require('./src/models/collection.js');
 // call the packages we need
 var cors = require('cors');
 var express    = require('express');        // call express
@@ -29,7 +29,61 @@ router.use(function(req, res, next) {
     // do logging
     next(); // make sure we go to the next routes and don't stop here
 });
-
+router.route('/userCollections').get(function(req,res){
+    console.log(req.query);
+    Collection.find({owner:req.query.name},function(err, collections){
+        if(err) throw err;
+        
+        res.send(collections);
+    });
+}).delete(function(req,res){
+    Collection.find({'_id':req.query.id})
+    .remove(function (err,deleted) {
+        if (err) throw err;
+        Collection.find({owner:req.query.user},function(err,collections){
+            if(err) throw err;
+            res.send(collections);
+        })
+    });
+});
+router.route('/publicCollections').get(function(req,res){
+    console.log(req.query);
+    Collection.find({priv:false},function(err, collections){
+        if(err) throw err;
+        res.send(collections);
+    });
+});
+router.route('/collection').post(function(req,res){
+    var collection   = new Collection({
+        name: req.body.name,
+        description: req.body.description,
+        owner: req.body.owner,
+        priv: req.body.priv,
+        rating:0
+    });
+    collection.save(function(err){
+        if(err) throw err;
+        
+        res.json({message:"Saved"});
+    })
+}).get(function(req,res){
+     Collection.find(function(err, collections) {
+            if (err)
+                res.send(err);
+            res.json(collections);
+        });
+}).put(function(req,res){
+    Collection.update({ _id: req.body._id },
+    { $set: {
+        name:req.body.name,
+        description:req.body.description,
+        owner:req.body.owner,
+        priv:req.body.priv}},
+    function (err, newUser) {
+        if (err) return handleError(err);
+        res.json({message:"Saved"});
+    });
+});
 router.route('/users')
     .post(function(req, res) {
         User.findOne({ username: req.body.name }, function(err, user) {
@@ -74,6 +128,7 @@ router.route('/users')
             }
         });
     }).get(function(req, res) {
+        console.log("made it");
         User.find(function(err, users) {
             if (err)
                 res.send(err);
@@ -81,22 +136,23 @@ router.route('/users')
         });
     });
 router.route('/verify/:email').get(function(req,res){
-    console.log(" I made it");
     User.update({ username: req.params.email }, { $set: { verified: true }}, function (err, newUser) {
                 if (err) return handleError(err);
                 res.send("Verified!");
              });
 });
-
 router.route('/login')
     .post(function(req, res) {
         User.findOne({ username: req.body.name }, function(err, user) {
             if (err) throw err;
-
+            
+            console.log(user.verified);
             if(user == null){
                 res.json({message:"User not found"})
             }
-            // test a matching password
+            else if(user.verified == false){
+                res.json({ message: 'User not verified!' });
+            }
             else{
                 user.comparePassword(req.body.pass, function(err, isMatch) {
                     if (err) throw err;

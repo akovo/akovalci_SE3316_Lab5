@@ -1,0 +1,15 @@
+<h1>New Collection</h1>
+<form (submit)="add(name.value,desc.value,pub.checked,$event)">
+  <div class="form-group">
+    <label>Name</label>
+    <input #name type="text" required class="form-control" placeholder="name">
+  </div>
+  <div class="form-group">
+    <label>Description</label>
+    <input #desc type="text" required class="form-control" placeholder="description">
+  </div>
+  <div class="checkbox">
+    <label>Public: <input #pub type="checkbox"></label>
+  </div> 
+  <button type="submit" class="btn btn-success">Submit</button>
+</form>

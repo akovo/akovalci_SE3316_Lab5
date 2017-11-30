@@ -3,17 +3,58 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
+import { RouterModule, Routes } from '@angular/router';
+import { LandingComponent } from './landing/landing.component';
+import { AuthService } from './auth.service';
+import { BootstrapModalModule } from 'ng2-bootstrap-modal';
+import { HomeComponent } from './home/home.component';
+import { NewCollectionComponent } from './new-collection/new-collection.component';
+import { EditCollectionComponent } from './edit-collection/edit-collection.component';
+import { AddImageModalComponent } from './add-image-modal/add-image-modal.component';
+
+
+const appRoutes: Routes = [
+ // { path: 'crisis-center', component: CrisisListComponent },
+//  { path: 'hero/:id',      component: HeroDetailComponent },
+  { path: '',
+    component: LandingComponent
+  },
+  { path: 'home',
+    component: HomeComponent
+  },
+  { path: 'new',
+    component: NewCollectionComponent
+  },
+  { path: 'edit',
+    component: EditCollectionComponent
+  }
+  //{ path: '**', component: PageNotFoundComponent }
+];
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SignupComponent,
+    LandingComponent,
+    HomeComponent,
+    NewCollectionComponent,
+    EditCollectionComponent,
+    AddImageModalComponent,
+  ],
+  entryComponents: [
+        AddImageModalComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    BootstrapModalModule,
+    RouterModule.forRoot(
+      appRoutes,
+      { enableTracing: true } // <-- debugging purposes only
+    ),
+    
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

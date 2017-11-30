@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
 import {LoginComponent} from './login/login.component'
 import {SignupComponent} from './signup/signup.component'
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-root',
@@ -8,15 +11,7 @@ import {SignupComponent} from './signup/signup.component'
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'Space Watch';
-  login:boolean = false;
-  signup:boolean = false;
-  onShowLogin() { 
-    console.log('login');
-    this.login = !this.login; 
-  };
-  onShowSignup() { 
-    console.log('signup');
-    this.signup = !this.signup; 
-  };
+  constructor(){
+    
+  }
 }

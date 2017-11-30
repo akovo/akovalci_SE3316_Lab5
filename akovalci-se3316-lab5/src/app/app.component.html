@@ -1,14 +1,3 @@
 
-<div style="text-align:center">
-  <h1>
-    Welcome to {{title}}!
-  </h1>
-</div>
-<div class="row">
-  <button class="btn btn-success col" (click)=onShowLogin()>Login</button>
-  <button class="btn btn-warning col" (click)=onShowSignup()>Signup</button>
-</div>
-<app-login [show]="login"></app-login>
-<hr/>
-<app-signup [show]="signup"></app-signup>
 
+<router-outlet></router-outlet>

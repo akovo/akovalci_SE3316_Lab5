@@ -43,5 +43,5 @@ userSchema.methods.comparePassword = function(candidatePassword, cb) {
 };
 
 
-
-module.exports = mongoose.model('User', userSchema);
+var conn = mongoose.createConnection('mongodb://localhost:27017/users');
+module.exports = conn.model('User', userSchema);
