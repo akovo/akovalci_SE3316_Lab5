@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { RouterModule, Routes, ActivatedRoute } from '@angular/router';
+import { RouterModule, Routes, ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -9,19 +9,23 @@ import { AuthService } from '../auth.service';
 })
 export class EditCollectionComponent implements OnInit {
   fields;
+  images = [];
   @ViewChild('name') name:ElementRef;
   @ViewChild('desc') desc:ElementRef;
   @ViewChild('pub') pub:ElementRef;
   
-  constructor(private route: ActivatedRoute, private auth: AuthService) {
+  constructor(private route: ActivatedRoute, private auth: AuthService,private router:Router) {
+      if(this.auth.getActive()==""){
+        this.router.navigate(['']);
+      }
       var tt = this;
-      console.log(tt.name);
       this.route.params.subscribe(params => {
-        // Defaults to 0 if no query param provided.
+        tt.images = params.images.split(',');
+        if(tt.images[0]==""){
+          tt.images.splice(0,1);
+        }
         tt.fields = params;
-
       });
-      console.log(this.fields);
   }
   ngAfterViewInit() {
     this.name.nativeElement.value  = this.fields.name;
@@ -32,6 +36,25 @@ export class EditCollectionComponent implements OnInit {
     else{
       this.pub.nativeElement.checked = false;
     }
+  }
+  removeImage(image){
+     var request = new Request('/api/collection',{
+             method: 'DELETE',
+             body: JSON.stringify({image:image,id:this.fields._id}),
+             headers: new Headers({
+                 'Content-Type': ' 	application/json',
+                 'Access-Control-Allow-Origin':'*'
+             })
+         });
+         var tt = this;
+          fetch(request).then( function(resp){
+                resp.json().then(function(data) {
+                  tt.images = data;
+                });
+            }).catch(err =>{
+            console.log(err);
+            });
+         
   }
   edit(name,desc,pub,e){
     e.preventDefault();

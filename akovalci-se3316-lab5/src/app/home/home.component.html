@@ -12,6 +12,9 @@
       <li class="nav-item active">
         <a class="nav-link" routerLink="../new" >New Collection</a>
       </li>
+      <li class="nav-item active">
+        <a class="nav-link" routerLink="../pub" >Browse Public Collections</a>
+      </li>
     </ul>
   </div>
 </nav>
@@ -22,7 +25,7 @@
 <h2>Collections</h2>
   <div class="row">
     <div class="text-center col-lg-4 col-md-12 col-sm-12 col-xs-12" *ngFor="let collection of collections">
-      <button class=" btn btn-default col-8" style="margin-bottom:5px; width:100%;" >{{collection.name}}</button>
+      <button class=" btn btn-default col-12" style="margin-bottom:5px; width:100%;" [routerLink]="['../view',collection]"><b>{{collection.name}}</b></button>
       <div class="row text-center"> 
         <div class="col-1"></div>
         <button class="col-4 btn btn-danger" style="margin-bottom:10px;" (click)="remove(collection._id)">Remove</button>
@@ -33,7 +36,7 @@
     </div>
   </div>
 <hr>
-	<div class="row">
+	<div class="row" style="margin-bottom:10px;">
         <div class="col-sm-12 col-sm-offset-12">
                 <div class="input-group">
                     <input type="text" #search class="form-control"  placeholder="Search" >
@@ -45,7 +48,7 @@
 	</div>
 <div class="row">
   <div *ngFor="let image of images" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    <div class="row"> <img src={{image}} class="img-responsive" style="margin-bottom:10px; margin: auto;margin-bottom:10px;"> </div>
+    <div class="row"> <img src={{image}} class="img-responsive" style="margin: auto;margin-bottom:10px;"> </div>
     <div class="row"> <button class="btn btn-success" (click)="showModal(image)" style=" margin: auto; width: 25%;margin-bottom:10px;">Add</button> </div>
   </div>
 </div>

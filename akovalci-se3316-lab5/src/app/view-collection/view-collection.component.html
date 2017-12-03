@@ -1,0 +1,10 @@
+<h1>{{collection.name}}</h1>
+<h3>{{collection.description}}</h3>
+<h4>By: {{collection.owner}}</h4>
+<h4>Points: {{collection.rating}}</h4>
+<hr>
+<div class="row">
+  <div *ngFor="let image of images" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="row"> <img src={{image}} class="img-responsive" style="margin: auto;margin-bottom:10px;"> </div>
+  </div>
+</div>

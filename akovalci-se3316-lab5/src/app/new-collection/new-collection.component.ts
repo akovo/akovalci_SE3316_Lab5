@@ -25,7 +25,6 @@ export class NewCollectionComponent implements OnInit {
       description: desc,
       owner: own,
       priv: priv
-      
     }
     console.log(collection);
      var request = new Request('/api/collection',{

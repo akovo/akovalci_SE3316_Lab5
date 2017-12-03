@@ -7,7 +7,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  @Input() show: boolean = false;
+  @Input() show:boolean = false;
   constructor(private auth: AuthService, private router: Router) {
   }
   Login(user,pass,e){
@@ -24,13 +24,15 @@ export class LoginComponent implements OnInit {
           console.log(_this);
             fetch(request).then( function(resp){
                 resp.json().then(function(data) {
-                  console.log(data);
                   if(data.message=="Success!"){
                       _this.auth.setActive(user);
                       _this.router.navigate(['home']);
                   }
                   else if(data.message=="User not verified!"){
                       alert("User not verified");
+                  }
+                  else{
+                    alert(data.message);
                   }
                 });
             }).catch(err =>{

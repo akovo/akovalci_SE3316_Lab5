@@ -1,4 +1,4 @@
-import { Component, OnInit, Input,ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input,ViewChild, ElementRef, Sanitizer,SecurityContext } from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import { AuthService } from '../auth.service';
 
@@ -9,11 +9,11 @@ import { AuthService } from '../auth.service';
 })
 export class SignupComponent implements OnInit {
     @Input() show:boolean = false;
-    @ViewChild('Suser') userInput:ElementRef;
-  constructor(private auth: AuthService) { 
+  constructor(private auth: AuthService, private sanitizer:Sanitizer) { 
   }
   Signup(user,pass, e){
-    e.preventDefault()
+    e.preventDefault();
+    console.log(user + " " + pass);
     var active = this.auth.getActive();
      console.log(active);
     
@@ -29,7 +29,6 @@ export class SignupComponent implements OnInit {
     fetch(request).then(resp =>{
         resp.json().then(function(data) {
               alert(data.message);
-              tt.userInput.nativeElement.value = "";
             });
     }).catch(err =>{
         console.log(err);

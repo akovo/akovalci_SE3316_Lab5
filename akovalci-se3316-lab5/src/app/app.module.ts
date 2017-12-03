@@ -11,6 +11,8 @@ import { HomeComponent } from './home/home.component';
 import { NewCollectionComponent } from './new-collection/new-collection.component';
 import { EditCollectionComponent } from './edit-collection/edit-collection.component';
 import { AddImageModalComponent } from './add-image-modal/add-image-modal.component';
+import { ViewCollectionComponent } from './view-collection/view-collection.component';
+import { PublicCollectionsComponent } from './public-collections/public-collections.component';
 
 
 const appRoutes: Routes = [
@@ -27,7 +29,14 @@ const appRoutes: Routes = [
   },
   { path: 'edit',
     component: EditCollectionComponent
+  },
+  { path: 'view',
+    component: ViewCollectionComponent
+  },
+  { path: 'pub',
+    component: PublicCollectionsComponent
   }
+  
   //{ path: '**', component: PageNotFoundComponent }
 ];
 
@@ -41,6 +50,8 @@ const appRoutes: Routes = [
     NewCollectionComponent,
     EditCollectionComponent,
     AddImageModalComponent,
+    ViewCollectionComponent,
+    PublicCollectionsComponent,
   ],
   entryComponents: [
         AddImageModalComponent

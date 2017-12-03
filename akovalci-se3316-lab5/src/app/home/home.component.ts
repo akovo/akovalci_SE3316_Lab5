@@ -19,6 +19,22 @@ export class HomeComponent implements OnInit {
     if(this.user ==""){
       this.router.navigate(['']);
     }
+    this.getCollections();
+  }
+  showModal(image){
+    var coll = this.collections;
+    console.log(coll);
+    let disposable = this.dialogService.addDialog(AddImageModalComponent, {
+      image:image,collections:coll})
+      .subscribe((isConfirmed)=>{
+        //We get dialog result
+        if(isConfirmed) {
+            alert('Added');
+            this.getCollections();
+        }
+      });
+  }
+  getCollections(){
     var param = new URLSearchParams;
     param.set('name',this.user);
     var request = new Request('/api/userCollections?'+param,{
@@ -38,20 +54,6 @@ export class HomeComponent implements OnInit {
             console.log(err);
             });
   }
-  showModal(image){
-    let disposable = this.dialogService.addDialog(AddImageModalComponent, {
-      title:'Confirm title', 
-      message:'Confirm message'})
-      .subscribe((isConfirmed)=>{
-        //We get dialog result
-        if(isConfirmed) {
-            alert('accepted');
-        }
-        else {
-            alert('declined');
-        }
-      });
-  }
   searchNasa(term){
     this.images = [];
     var param = new URLSearchParams;
@@ -59,10 +61,7 @@ export class HomeComponent implements OnInit {
     param.set('media_type','image');
     console.log('https://images-api.nasa.gov/search?'+param);
     var request = new Request('https://images-api.nasa.gov/search?'+param,{
-             method: 'GET',
-             headers: new Headers({
-                 'Content-Type': ' 	application/json'
-             })
+             method: 'GET'
          });
          var tt = this;
             fetch(request).then( function(resp){
@@ -75,9 +74,6 @@ export class HomeComponent implements OnInit {
             console.log(err);
             });
   }
-  
-  
-  
   remove(id){
     var param = new URLSearchParams;
     param.set('id',id);

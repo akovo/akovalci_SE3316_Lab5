@@ -2,10 +2,14 @@
     <div class="modal-content">
        <div class="modal-header">
          <button type="button" class="close" (click)="close()" >&times;</button>
-         <h4 class="modal-title">{{title || 'Confirm'}}</h4>
+         <h4 class="modal-title">Select Collections</h4>
        </div>
        <div class="modal-body">
-         <p>{{message || 'Are you sure?'}}</p>
+         <form>
+            <div class="checkbox" *ngFor="let collection of collections">
+                <label><input type="checkbox" #coll (change)="onChange(collection._id,$event)" name="collection">{{collection.name}}</label>
+            </div>
+         </form>
        </div>
        <div class="modal-footer">
          <button type="button" class="btn btn-primary" (click)="confirm()">OK</button>

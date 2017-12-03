@@ -30,10 +30,8 @@ router.use(function(req, res, next) {
     next(); // make sure we go to the next routes and don't stop here
 });
 router.route('/userCollections').get(function(req,res){
-    console.log(req.query);
     Collection.find({owner:req.query.name},function(err, collections){
         if(err) throw err;
-        
         res.send(collections);
     });
 }).delete(function(req,res){
@@ -43,12 +41,77 @@ router.route('/userCollections').get(function(req,res){
         Collection.find({owner:req.query.user},function(err,collections){
             if(err) throw err;
             res.send(collections);
-        })
+        });
     });
 });
+router.route('/rate').put(function(req,res){
+    Collection.findOne({_id:req.body.collection._id},function(err, collection) {
+        if(err) throw err;
+        if(collection.raters==null){
+            //collection has no ratings
+            collection.raters = [];
+            collection.ratings = [];
+            collection.raters.push(req.body.user);
+            collection.ratings.push(req.body.rate);
+            collection.rating = calculateRating(collection.ratings);
+            collection.save(function(err,status){
+                if(err) throw err;
+                res.json({message:"rated"});
+            });
+        }
+        else if(collection.raters.includes(req.body.user)){
+            //User has already rated, replace their old rating with the new one
+            collection.ratings[collection.raters.indexOf(req.body.user)]=req.body.rate;
+            collection.rating = calculateRating(collection.ratings);
+            collection.save(function(err,status){
+                if(err) throw err;
+                res.json({message:"rated"});
+            });
+        }else if(!collection.raters.includes(req.body.user)){
+            //user hasn't rated
+            collection.raters.push(req.body.user);
+            collection.ratings.push(req.body.rate);
+            collection.rating = calculateRating(collection.ratings);
+            collection.save(function(err,status){
+                if(err) throw err;
+                res.json({message:"rated"});
+            });
+        }
+        
+    })
+});
+
+
+function calculateRating(ratings){
+    var total = 0;
+    for(var i = 0;i<ratings.length;i++){
+        console.log(ratings[i]);
+        total+=parseInt(ratings[i]);
+    }
+    var average = total/ratings.length;
+    console.log(total + " " + average);
+    return (total/ratings.length);
+}
 router.route('/publicCollections').get(function(req,res){
-    console.log(req.query);
+    //find all collections that are public, sort them, and return 10 
     Collection.find({priv:false},function(err, collections){
+        if(err) throw err;
+        collections.sort(function (b, a) {
+            return a.rating - b.rating;
+        });
+        var collectionsToSend = [];
+        for(var i = 0;i<collections.length; i++){
+            collectionsToSend.push(collections[i]);
+            if(i==9){
+                break;
+            }
+        }
+        res.send(collections);
+    });
+});
+router.route('/browseCollections').get(function(req,res){
+    console.log(req.query);
+    Collection.find({owner:{ $nin: [req.query.name] },priv:false},function(err, collections){
         if(err) throw err;
         res.send(collections);
     });
@@ -83,6 +146,24 @@ router.route('/collection').post(function(req,res){
         if (err) return handleError(err);
         res.json({message:"Saved"});
     });
+}).delete(function(req,res){
+    Collection.update( {_id: req.body.id}, { $pullAll: {images: [req.body.image] } },function(err,stats){
+          Collection.find({_id: req.body.id},function(err,col){
+              res.json(col[0].images);
+          })
+    });
+});
+router.route('/images').put(function(req,res){
+    console.log(req.body);
+    for(var i =0; i < req.body.collections.length;i++){
+        Collection.update(
+           { _id: req.body.collections[i]  },
+           { $push: { images: req.body.image } }
+        , function(err,newCol){
+            
+        })
+    }
+    res.json({message:"Done!"});
 });
 router.route('/users')
     .post(function(req, res) {
@@ -145,8 +226,7 @@ router.route('/login')
     .post(function(req, res) {
         User.findOne({ username: req.body.name }, function(err, user) {
             if (err) throw err;
-            
-            console.log(user.verified);
+        
             if(user == null){
                 res.json({message:"User not found"})
             }

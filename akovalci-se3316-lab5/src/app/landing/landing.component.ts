@@ -13,7 +13,7 @@ export class LandingComponent implements OnInit {
   login:boolean = false;
   signup:boolean = false;
   constructor(){
-     var request = new Request('/api/publicCollections?',{
+     var request = new Request('/api/publicCollections',{
              method: 'GET',
              headers: new Headers({
                  'Content-Type': ' 	application/json',

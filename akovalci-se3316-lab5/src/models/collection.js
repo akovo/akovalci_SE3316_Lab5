@@ -8,11 +8,10 @@ var collectionSchema   = new Schema({
     description: { type: String, required: true},
     owner: { type: String, required: true},
     priv: {type: Boolean, required: true},
-    rating:{type:Number,required:true},
-    images:[]
-    
-    
-   
+    raters:Array(),
+    ratings:Array(),
+    rating:{type:Number},
+    images:Array()
 });
 var conn = mongoose.createConnection('mongodb://localhost:27017/collection');
-module.exports = conn.model('User', collectionSchema);
+module.exports = conn.model('Collection', collectionSchema);
