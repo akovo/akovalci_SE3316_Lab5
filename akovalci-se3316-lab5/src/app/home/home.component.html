@@ -40,12 +40,21 @@
         <div class="col-sm-12 col-sm-offset-12">
                 <div class="input-group">
                     <input type="text" #search class="form-control"  placeholder="Search" >
-                        <button class="btn btn-default" (click)="searchNasa(search.value)">
+                        <button class="btn btn-default" (click)="searchNasa(search.value,1)">
                             Search
                         </button>  
                 </div>
         </div>
 	</div>
+<div class="row" *ngIf="results" style="margin-bottom:10px;">
+  <div class="col-6 text-center">
+    <button class="btn btn-default" (click)="changePage(-1)">Previous</button>
+  </div>
+  <div class="col-6 text-center">
+    <button class="btn btn-default"(click)="changePage(1)">Next</button>  
+  </div>
+</div>
+
 <div class="row">
   <div *ngFor="let image of images" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
     <div class="row"> <img src={{image}} class="img-responsive" style="margin: auto;margin-bottom:10px;"> </div>

@@ -10,6 +10,7 @@ export class PublicCollectionsComponent implements OnInit {
   collections;
   user;
   constructor(private router:Router, private auth:AuthService) {
+    //ensure that a user is logged in
     if(this.auth.getActive()==""){
         this.router.navigate(['']);
     }
@@ -17,6 +18,7 @@ export class PublicCollectionsComponent implements OnInit {
     this.getCollections();
     
   }
+  //GET all collections whose owner is not the user
   getCollections(){
      var param = new URLSearchParams;
     param.set('name',this.user);
@@ -30,12 +32,16 @@ export class PublicCollectionsComponent implements OnInit {
           var tt = this;
             fetch(request).then( function(resp){
                 resp.json().then(function(data) {
+                  //Set the collections to be displayed 
                   tt.collections = data;
                 });
             }).catch(err =>{
             console.log(err);
             });
   }
+  /**
+   * Rate a collection by sending a put request containing the rating entered, the collection to rate, and the user
+   **/
   rateCollection(collection,rate,e){
       e.preventDefault();
       console.log("here")
@@ -52,6 +58,7 @@ export class PublicCollectionsComponent implements OnInit {
                 resp.json().then(function(data) {
                   console.log(data);
                   if(data.message=="rated"){
+                    //Retrieve collections to show updated ratings
                     alert(data.message);
                     tt.getCollections();
                   }

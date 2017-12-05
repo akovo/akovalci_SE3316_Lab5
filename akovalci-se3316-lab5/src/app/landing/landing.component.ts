@@ -13,6 +13,7 @@ export class LandingComponent implements OnInit {
   login:boolean = false;
   signup:boolean = false;
   constructor(){
+    //Retrieve all public collections to show on the landing page
      var request = new Request('/api/publicCollections',{
              method: 'GET',
              headers: new Headers({
@@ -30,12 +31,12 @@ export class LandingComponent implements OnInit {
             console.log(err);
             });
   }
+  //Toggle the login variable to true 
   onShowLogin() { 
-    console.log('login');
     this.login = !this.login; 
   };
+  //Toggle the sign up variable to true
   onShowSignup() { 
-    console.log('signup');
     this.signup = !this.signup; 
   };
   ngOnInit() {

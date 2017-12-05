@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { RouterModule, Routes, Router } from '@angular/router';
-
+import { DomSanitizer } from '@angular/platform-browser';
+import { SecurityContext } from '@angular/core';
 @Component({
   selector: 'app-new-collection',
   templateUrl: './new-collection.component.html',
@@ -9,15 +10,27 @@ import { RouterModule, Routes, Router } from '@angular/router';
 })
 export class NewCollectionComponent implements OnInit {
 
-  constructor(private auth: AuthService, private router:Router) {
+  constructor(private auth: AuthService, private router:Router,private sanitizer:DomSanitizer) {
+    //Check that a user is logged in
     var own = this.auth.getActive();
     if(own ==""){
       this.router.navigate(['']);
     }
   }
-  
+  //Sanitize originalString
+  encodeHTML(originalString) {
+    var OG = originalString;
+    OG = this.sanitizer.sanitize(SecurityContext.HTML,OG);
+    return OG;
+  }
+  /**
+  Runs on click of the submit button
+  Sends a POST request to the API with all fields necessary to add a new collection
+  **/
   add(name,desc,pub,e){
     e.preventDefault();
+    name = this.encodeHTML(name);
+    desc = this.encodeHTML(desc);
     var own = this.auth.getActive();
     var priv = !pub;
     var collection = {
@@ -38,7 +51,8 @@ export class NewCollectionComponent implements OnInit {
             fetch(request).then( function(resp){
                 resp.json().then(function(data) {
                   console.log(data);
-                  if(data.message=="Success!"){
+                  //let the user know a collection has been saved
+                  if(data.message=="Saved"){
                       alert("Collection saved");
                   }
                 });

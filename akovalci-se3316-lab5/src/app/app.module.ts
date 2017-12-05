@@ -13,11 +13,13 @@ import { EditCollectionComponent } from './edit-collection/edit-collection.compo
 import { AddImageModalComponent } from './add-image-modal/add-image-modal.component';
 import { ViewCollectionComponent } from './view-collection/view-collection.component';
 import { PublicCollectionsComponent } from './public-collections/public-collections.component';
+import { AdminHomeComponent } from './admin-home/admin-home.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { DmcaPolicyComponent } from './dmca-policy/dmca-policy.component';
 
 
 const appRoutes: Routes = [
- // { path: 'crisis-center', component: CrisisListComponent },
-//  { path: 'hero/:id',      component: HeroDetailComponent },
+  //Paths to navigate the UI
   { path: '',
     component: LandingComponent
   },
@@ -35,9 +37,16 @@ const appRoutes: Routes = [
   },
   { path: 'pub',
     component: PublicCollectionsComponent
-  }
-  
-  //{ path: '**', component: PageNotFoundComponent }
+  },
+  { path: 'admin',
+    component: AdminHomeComponent
+  },
+  { path: 'privacy',
+    component: PrivacyPolicyComponent
+  }, 
+  { path: 'dmca',
+    component: DmcaPolicyComponent
+  }  
 ];
 
 @NgModule({
@@ -52,6 +61,9 @@ const appRoutes: Routes = [
     AddImageModalComponent,
     ViewCollectionComponent,
     PublicCollectionsComponent,
+    AdminHomeComponent,
+    PrivacyPolicyComponent,
+    DmcaPolicyComponent,
   ],
   entryComponents: [
         AddImageModalComponent
@@ -65,6 +77,7 @@ const appRoutes: Routes = [
     ),
     
   ],
+  //Make the AuthService a singleton through this provider
   providers: [AuthService],
   bootstrap: [AppComponent]
 })

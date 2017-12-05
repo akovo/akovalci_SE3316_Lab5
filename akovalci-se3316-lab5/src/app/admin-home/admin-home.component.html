@@ -1,0 +1,80 @@
+<hr>
+<h2>Admin Page</h2>
+<hr>
+<h3>Document Dispute:</h3>
+<form ngForm (submit)="log($event,content.value)">
+    <div class="radio">
+      <label><input type="radio" name="optradio" value="Takedown Request" (change)="type('Takedown Request')">Takedown Request</label>
+    </div>
+    <div class="radio">
+      <label><input type="radio" name="optradio" value="Infringement Notice" (change)="type('Infringement Notice')">Infringement Notice</label>
+    </div>
+    <div class="radio">
+      <label><input type="radio" name="optradio" value="Dispute Claim"(change)="type('Dispute Claim')">Dispute Claim</label>
+    </div>
+    <div class="form-group">
+          <label for="comment">Description:</label>
+          <textarea #content class="form-control" rows="5" id="comment"></textarea>
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
+<hr>
+<h2>DMCA Takedown Procedure:</h2>
+<ol>
+    <li>Check dylanAndAdamPython@gmail.com for dispute requests.</li>
+    <li>Ensure that dispute requests identify the collection name and username which has infringed.</li>
+    <li>Disable the disputed collection by searching for it on the admin homepage, and clicking the disable button. This will notify the user by email.</li>
+    <li>Log the infringement notice and takedown request as seperate logs using the disupte logging tool.</li>
+    <li>If the infringing user submits a counter claim stating they did not infringe, log this as a dispute claim and notify the individual who initially complained of infringement by email.</li>
+    <li>If the issuer of the initial complaint does not respond with proof of a court order in 14 business days, enable the disputed content.</li>
+</ol>
+<hr>
+<h2>Search Collections</h2>
+<div class="row" style="margin-bottom:10px;">
+        <div class="col-sm-12 col-sm-offset-12">
+                <div class="input-group">
+                    <input type="text" #search class="form-control"  placeholder="Search" >
+                        <button class="btn btn-default" (click)="searchCollections(search.value)">
+                            Search
+                        </button>  
+                </div>
+        </div>
+	</div>
+ <div class="row">
+    <div class="text-center col-lg-4 col-md-12 col-sm-12 col-xs-12" *ngFor="let collection of displayedCollections">
+      <button class=" btn btn-default col-12" style="margin-bottom:5px; width:100%;" [routerLink]="['../view',collection]"><b>{{collection.name}}</b></button>
+      <div *ngIf="collection.enabled" class="row text-center"> 
+        <button class="col-12 btn btn-danger" style="margin-bottom:10px;" (click)="changeState(collection._id,false,collection.owner,collection.name)">Disable</button>
+      </div>
+      <div *ngIf="!collection.enabled" class="row text-center"> 
+        <button class="col-12 btn btn-warning" style="margin-bottom:10px;" (click)="changeState(collection._id,true,collection.owner,collection.name)">Enable</button>
+      </div>
+    </div>
+  </div>
+<hr>
+<h2>Past logs</h2>
+<div *ngFor="let log of logs">
+    <h4>{{log.type}}</h4>
+    <p>{{log.description}}</p>
+</div>
+<hr>
+<h2>Edit Policies:</h2>
+
+<hr>
+<h3>Privacy and Security</h3>
+<form (submit)="savePolicy('privacy',privacy.value,$event)">
+<div class="form-group">
+  <label for="privacy">Content:</label>
+  <textarea #privacy class="form-control" rows="10" id="privacy" value={{privacyPolicy}}></textarea>
+</div>
+<button class="btn btn-warning">Save</button>
+</form>
+<hr>
+<h3>DMCA</h3>
+<form (submit)="savePolicy('dmca',dmca.value,$event)">
+<div class="form-group">
+  <label for="dmca">Content:</label>
+  <textarea #dmca class="form-control" rows="10" id="dmca" value={{dmcaPolicy}}></textarea>
+</div>
+<button class="btn btn-warning">Save</button>
+</form>

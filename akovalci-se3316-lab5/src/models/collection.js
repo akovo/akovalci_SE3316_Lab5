@@ -1,4 +1,4 @@
-// app/models/courseDescription.js
+
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
@@ -8,6 +8,7 @@ var collectionSchema   = new Schema({
     description: { type: String, required: true},
     owner: { type: String, required: true},
     priv: {type: Boolean, required: true},
+    enabled:{type: Boolean, required: true},
     raters:Array(),
     ratings:Array(),
     rating:{type:Number},
