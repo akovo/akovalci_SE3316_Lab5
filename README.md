@@ -1,2 +1,2 @@
-# akovalci_SE3316_Lab5
-Lab5
+# SpaceWatch
+Web Technologies lab, utilizing the NASA API to allow users to create and edit image collections
